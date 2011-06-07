@@ -1,0 +1,42 @@
+define describe_(opt,base,x) {
+  auto os,c,od,d,p,y,er;
+  os=scale;scale=0
+  x/=1;if(x<0)x*=-1
+  p=1;y=0;er=0;while(x){
+   d=x%base;c=0
+   while(x%base==d){c+=1;x/=base}
+   if(!er&&c>=base){
+     er=1;print "describe_count"
+     if(opt){print"last"}else{print"first"}
+     print ": count too large; unwanted carry\n"
+   }
+   if(opt){d=d*base+c}else{d=c*base+d}
+   y+=p*d
+   p*=base^2
+  }
+  scale=os;return y
+}
+
+define describe_countfirst(base,x) { return describe_(0,base,x) }
+define describe_countlast(base,x) {  return describe_(1,base,x) }
+
+define parserle_(opt,base,x) {
+  auto os,c,d,p,y,er;
+  os=scale;scale=0
+  x/=1;if(x<0)x*=-1
+  p=1;y=0;er=0;while(x){
+    if(opt){c=x%base;x/=base}
+    d=x%base;x/=base
+    if(!opt){c=x%base;x/=base}
+    if(!er&&c==0){
+      er=1;print "parserle_count"
+      if(opt){print"last"}else{print"first"}
+      print": invalid input detected\n"
+    }
+    for(;c;c--){y+=p*d;p*=base}
+  }
+  scale=os;return y
+}
+
+define parserle_countfirst(base,x) { return parserle_(0,base,x) }
+define parserle_countlast(base,x) {  return parserle_(1,base,x) }

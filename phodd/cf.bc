@@ -1,0 +1,193 @@
+### CF.BC - Continued fraction experimentation
+
+# run with funcs.bc
+
+# sanity check for the below
+define check_cf_max_() {
+ auto maxarray;
+ maxarray = 4^8;cf_max=int(cf_max)
+ if(1>cf_max||cf_max>maxarray)cf_max=maxarray
+ return 0;
+}
+
+# global var; set to halt output and calculations at a certain point
+cf_max=0;
+
+# Tidy up a newly created cf array
+#  expects the index past the end of the array as a parameter
+#  assumes the last element of large cfs to be invalid due to rounding
+#    and deletes that term.
+#  for apparently infinite (rather than just long) cfs, uses a bc trick
+#    to signify special behaviour to the printcf function.
+#  for apparently finite cfs, checks whether the cf ends ..., n, 1]
+#  which can be simplified further to , n+1]
+define cf_tidy_(i,p,max) {
+ auto which0;
+ cf[i]=0
+ if(p>max){
+   which0=0;if(p<max*A^5)which0=0.0;# assume infinite
+   cf[--i]=which0;return 0
+ } 
+ if(i<2)return 0;
+ i-=1;if(abs(cf[i])==1){cf[i-1]+=cf[i];cf[i]=0}
+ return 0;
+}
+
+# Create a continued fraction representation of x in the global array cf[]
+define cf(x) {
+ auto i, p, max;
+ i=check_cf_max_();
+ max=A^int(scale/2);p=1
+ for(i=0;i<cf_max&&p<max;i++) {
+  p*=1+abs(cf[i]=int(x));
+  x-=cf[i]
+  if(x==0||p==0){i+=1;break}
+  x=1/x
+ }
+ return cf_tidy_(i,p,max);
+}
+
+# Create a continued fraction representation of x in the global array cf[]
+# using alternating signs
+define cfalt(x) {
+ auto i, p, max, sign;
+ i=check_cf_max_();
+ max=A^int(scale/2);p=1
+ sign=1;if(x<0)sign=-1
+ for(i=0;i<cf_max&&p<max;i++) {
+  p*=abs(cf[i]=sign+int(x))
+  sign*=-1
+  x-=cf[i]
+  if(x==0||p==0){i+=1;break}
+  x=1/x
+ }
+ return cf_tidy_(i,p,max);
+}
+
+# Create a continued fraction representation of x in the global array cf[]
+# using signed terms to guarantee largest magnitude following term
+define cfnear(x) {
+ auto i, p, max;
+ i=check_cf_max_();
+ max=A^int(scale/2);p=1
+ for(i=0;i<cf_max&&p<max;i++) {
+  p*=1+abs(cf[i]=floor(x+.5))
+  x-=cf[i]
+  if(x==0||p==0){i+=1;break}
+  x=1/x
+ }
+ return cf_tidy_(i,p,max);
+}
+
+# Output the global array cf[] formatted as a continued fraction
+define printcf() {
+ auto i,sign;
+ i=check_cf_max_();
+ sign=1;if(cf[0]<0||(cf[0]==0&&cf[1]<0)){sign=-1;print "-"}
+ print "[", sign*cf[0];
+ if(cf[1]==0){print "]";return 0}
+ print "; ";
+ for(i=2;i<cf_max&&cf[i]!=0;i++)print sign*cf[i-1], ", ";
+ print sign*cf[i-1];
+ # detect a 0.0 which signifies that the cf has been determined
+ # - by cf_tidy_ - to be infinite (not 100% accurate, but good)
+ if(scale(cf[i]))print ",..."
+ print "]";
+ return 0;
+}
+
+define printcf_frac(improper) {
+ auto n,d,i,temp;
+ i=check_cf_max_();
+ improper=!!improper;
+ if(cf[1]==0){print cf[0];return cf[0]}
+ for(i=1;i<cf_max&&cf[i]!=0;i++){}
+ n=cf[--i];d=1
+ for(i--;i>=!improper;i--){
+  temp=n;n=d;d=temp # reciprocal = swap numerator and denominator
+  n+=cf[i]*d
+ }
+ temp=0
+ if(!improper){temp=n;n=d;d=temp}#correct for having stopped early
+ if(d<0){n*=-1;d*=-1} # denominator always +ve
+ if(!improper&&cf[0]!=0){
+   print temp=cf[0]
+   if((n<0)==(d<0)){print"+"} # if n and d have same sign...
+ }
+ print n,"/",d
+ return(temp+n/d);
+}
+
+# Convert global array cf[] back into a number
+define cf2num() {
+ auto n, i;
+ i=check_cf_max_();
+ if(cf[1]==0)return cf[0];
+ for(i=1;i<cf_max&&cf[i]!=0;i++){}
+ n=cf[--i]
+ for(i--;i>=0;i--)n=1/n+cf[i]
+ return(n);
+}
+
+# Convert global array cf[] back into a number ignoring term signs
+define cf2num_abs() {
+ auto n, i;
+ i=check_cf_max_();
+ if(cf[1]==0)return cf[0];
+ for(i=1;i<cf_max&&cf[i]!=0;i++){}
+ n=abs(cf[--i])
+ for(;i>=0;i--)n=1/n+abs(cf[i])
+ return(n);
+}
+
+# Convert global array cf[] back into a number ignoring term signs
+#  and subtracting one from those absolute values
+define cf2num_abs1() {
+ auto n, i;
+ i=check_cf_max_();
+ if(cf[1]==0)return cf[0];
+ for(i=1;i<cf_max&&cf[i]!=0;i++){
+   if(abs(cf[i])==1){
+     print "cf2num_abs1 error: invalid cf for this transformation\n";
+     return 0;
+   }
+ }
+ n=abs(cf[--i])-1
+ for(;i>=0;i--)n=1/n+abs(cf[i])-1
+ return(n);
+}
+
+# Turn the binary representation of x into a continued fraction-like 
+# structure using global array cf[].
+# e.g. 0.1001000011111101110111 -> [0;1,2,1,4,6,1,3,1,3]
+define bincf(x) {
+ auto i,b,bb,n,j;
+ i=check_cf_max_();
+ x=abs(x);if(x>1)x=frac(x)
+ x*=2;b=int(x);x-=b;n=1;j=1;cf[0]=0
+ for(i=0;i<cf_max&&i<scale;i++){
+  x*=2;bb=int(x)
+  if(bb==b){n+=1}else{cf[j]=n;j+=1;n=1}
+  b=bb;x-=b
+ }
+ if(n!=0){cf[j]=n;j+=1}
+ cf[j-1]*=b
+ cf[j]=0
+ return 0;
+}
+
+# Read a continued fraction as a representation of alternating groups of 
+# bits in a binary number.
+# e.g. [1;4,1,4,1,4,1,4,1...] -> 0.11110111101111011110...
+define cf2bin() {
+ auto n,i,b,x,t;
+ i=check_cf_max_();
+ #cf[0]=0;
+ x=2^cf[0]-1
+ b=0;t=1
+ for(i=1;i<cf_max&&cf[i]!=0&&t!=0;i++){
+  for(j=0;j<cf_max&&j<cf[i]&&t!=0;j++)x+=b*(t/=2)
+  b=1-b
+ }
+ return(x)
+}

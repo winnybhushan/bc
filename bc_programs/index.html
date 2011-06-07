@@ -1,0 +1,303 @@
+<html>
+<head>
+<link rel="shortcut icon" href="http://www.numbertheory.org/gnubc/favicon_gbc.ico" type="image/x-icon"> 
+<title>
+BC NUMBER THEORY PROGRAMS
+</title>
+<STYLE TYPE="text/css">
+<!--
+body { font-family: Helvetia, sans-serif}
+A:visited { text-decoration: none }
+A:link {text-decoration: none}
+A:hover {text-decoration: underline}
+H3 {text-align: center}
+-->
+</STYLE>
+</head>
+<body bgcolor="FFFFFF">
+<!--<font face=arial,helvetica size=-1>-->
+<h2>BC number theory programs</h2>
+<hr>
+<ul>
+<li>Short <a href="./gnubc.html#description">description</a> of bc
+<li><a href="http://www.gnu.org/software/bc/manual/bc.html">Manuals</a> for BC 1.06
+<li>Dowmload sites for BC 1.06:
+<ul>
+<li><a href="http://www.sfr-fresh.com/unix/misc/bc-1.06.95.tar.gz/">The SfR Freeware/Shareware Archive</a>
+<li><a href="http://packages.qa.debian.org/b/bc.html">Debian</a>
+</ul>
+<li>Some <a href="./gnubc.html#bugs">bugs and idiosyncracies</a>
+<li><a href="./gnubc.html#programs">List</a> of bc programs written by <a href="../keith.html">Keith Matthews</a>
+<li>Some BCMath (online) <a href="../php/">programs</a> 
+<ul>
+<li>BC has been included in PHP  as BCMATH and in this form lends itself to gives nice HTML output. <br>
+Many of my BC programs have been converted to BCMATH form.
+</ul>
+<li>Download my bc programs: (<a href="http://www.numbertheory.org/gnubc/bc_programs.tar.gz">gzipped tar version</a>)
+<li><a href="./updates.html">Updates</a>
+</ul>
+<a name="description">
+<b>BC</b> (version 1.06) (see the <a href="http://www.gnu.org/software/bc/manual/bc.html">manual</a>)  is a language that supports arbitrary precision
+ integer arithmetic calculations with interactive execution of statements. 
+ It is an idiosyncratic programming language which closely resembles parts
+ of the C language. While it is somewhat slow for some purposes (all code is
+ executed as it is read), the author has found <strong>bc</strong> very useful in
+ teaching and research.  The code is very easy to read and students can see
+ directly how an algorithm has been implemented. It is also useful as a template
+ for harder-to-write, but faster C code.<br>
+bc-1.06 is a superior version of the basic bc program which comes with the UNIX operating system.<p>
+ To run a bc program such as <tt>gcd</tt> below, type <kbd> bc gcd</kbd>. 
+ This loads the <strong>bc</strong> program and the bc program <tt>gcd</tt>.
+<p>
+ As a calculator, <strong>bc</strong> has a number of standard functions eg. 
+<p>
+<tt>5+3, 5*3, 5/3,</tt> (=integer part), <tt>5&#37;3, </tt>(=least remainder),<tt> 5^3, sqrt(n)</tt>.
+<p>
+global array variables can be entered: <tt>m[0]=5;m[1]=3;m[2]=7</tt>
+<p>
+Typing <kbd>z=lcma(m[ ],3)</kbd> and then <kbd>z</kbd>, prints and stores z, the
+ lcm of 5, 3 and 7.
+<p>
+Consult the <strong>bc</strong> <a href="http://www.gnu.org/software/bc/manual/bc.html">manual</a> for more information.<br>
+<a name="bugs">
+Bugs and idiosyncrasies: 
+<ol>
+<li> When using the if-else construction, insert a "<tt>\</tt>", as follows:
+<pre>
+          if(expression){statement1}\
+          else{ statement2}
+</pre>
+Alternatively, as pointed out by <a href="http://www.instantlogic.net/">Anton Stiglic</a>, use the construction
+<pre>
+          if(expression){
+               statement1
+          }else{
+               statement2
+          }
+</pre>
+<li> There was a bug in bc-1.06 under some Solaris platforms, which causes my program <tt>squareroot</tt> below to give a bus error, though not under linux. Hopefully the bug will not be present when bc-1.07 is released, hopefully after July 2009.
+<li> The maximum number of auto variables allowed in a bc function seems to be between 24 and 28 on some operating systems! This limitation will be removed in bc-1.07.
+<li>The <tt>continue</tt> statement only works for <tt>for</tt> loops.
+</ol>
+
+<a name="programs">
+<h3><b>BC PROGRAMS WRITTEN BY KEITH MATTHEWS</b></h3>
+These are downloadable as a <a href="http://www.numbertheory.org/gnubc/bc_programs.tar.gz">gzipped tar file</a>.<br>
+They may contain bugs, both on the algorithmic and programming side.
+<p>
+<ol>
+<li><strong>gcd:</strong>
+<ul>
+<li> <tt>sign(n)</tt>.
+<li> <tt>abs(n)</tt>.
+<li> <tt>mod(a,b)</tt>, (b &gt; 0): returns a(mod b).
+<li> <tt>int(a,b)</tt>:  returns the integer part of a/b, b nonzero.
+<li> <tt>gcd(m,n)</tt>.
+<li> <tt>gcd1(m,n)</tt>: gcd(m,n)=gcd1(m,n)&middot;m+gcd2(m,n)&middot;n.
+<li> <tt>gcd2(m,n)</tt>.
+<li> <tt>lcm(m,n)</tt>.
+<li> <tt>inv(a,n)</tt>: returns the inverse of a mod m.
+<li> <tt>cong(a,b,m)</tt>: solves ax &equiv; b (mod m).
+<li> <tt>chinese(a,b,m,n)</tt>: solves x &equiv; a(mod m) and x &equiv; b(mod n).
+<li> <tt>gcda(m[],n)</tt>: finds gcd(m[0],...,m[n-1]) and expresses it
+     as a linear combination of m[0],...,m[n-1].
+<li> <tt>lcma(m[],n)</tt>: finds lcm(m[0],...,m[n-1]).
+<li> <tt>chinesea(a[],m[ ],n)</tt>: solves x &equiv; a[i](mod m[i]), i=1,...,n-1.
+<li> <tt>chineseb(a[],b[],m[],n)</tt>: solves a[i]x &equiv; b[i](mod m[i]),
+     i=1,...,n-1.
+<li> <tt>mpower(a,b,c)</tt>: returns a<sup>b</sup> (mod c).
+<li> <tt>exp(a,b)</tt>: returns a<sup>b</sup>.
+<li> <tt>mthroot(a,b,m)</tt>: returns the integer part of the mth-root of a/b. 
+     Here a,b and m are positive integers, m &gt; 1.  (See K.R. Matthews, <a href="../keith/mthroot.html"><em>Computing mth roots</em></a>, College Mathematics Journal 19 (1988) 174-176.)
+<li> <tt>mthrootr(a,b,m,r)</tt>: this gives the mth-root of a/b 
+truncated to r places.
+<li><tt>binomial(n,m)</tt>: returns the binomial coefficient.
+<li><tt>gcd3(a,b,c)</tt>: returns gcd(a,b,c).
+</ul>
+<li><strong>euclid</strong>: <tt>euclid(m,n)</tt> performs Euclid's algorithm.
+<li><strong>euclid1</strong>: <tt>euclid(m,n)</tt> returns the length of Euclid's algorithm.
+<li><strong>jacobi</strong>:
+<ul>
+<li><tt>jacobi(m,n)</tt> calculates the Jacobi symbol
+<li><tt>peralta(a,p)</tt> finds a square root of a quadratic 
+residue a mod p, using an algorithm of Rene Peralta.
+</ul>
+<li><strong>serret</strong>: <tt>serret(p)</tt> expresses a prime of the form 
+4n+1 as the sum of two squares using Serret's algorithm.
+<li><strong>3x+1</strong>: <tt>collatz(n)</tt> tests the 3x+1 conjecture.
+<li><strong>3x+371</strong>: <tt>s(n)</tt> tests the 3x+371 conjecture.
+<li><strong>phi</strong>: (slow-uses Brent-Pollard only)
+<ul>
+<li> <tt>omega(n)</tt> returns the number of distinct prime factors of n.
+<li> <tt>phi(n)</tt> returns the value of Euler's function.
+<li> <tt>tau(n)</tt> returns the number of divisors of n.
+<li> <tt>sigma(n)</tt> returns the sum of the divisors of n.
+<li> <tt>mu(n)</tt> returns the value of the Mobius Function.
+<li> <tt>lprimroot(p)</tt> returns the least primitive root mod p.
+<li> <tt>orderm(a,m)</tt> returns the order of a mod m.
+</ul>
+<li><strong>factors</strong>: <tt>factor(n)</tt> attempts to factor n using 
+         Brent-Pollard (slow).
+<li><strong>lucas</strong>: <tt>lucas(n)</tt> performs the strong base 2 
+         pseudoprime test and Lucas pseudoprime test on n.<br>
+         (Needs <tt>jacobi</tt>).
+<li><strong>decimal</strong>: <tt>period(m,n,b)</tt> outputs the period 
+         digits of the base b expansion of m/n, where m,n,b (b &gt; 1) are 
+	 positive integers, 1&le;m &lt; n. 
+<li><strong>pell</strong>: <tt>pell(d,e)</tt> finds the least solution of Pell's
+         equations x<sup>2</sup>-d*y<sup>2</sup>=&#177;1,&plusmn;2,&plusmn;3 and least primitive solution of x<sup>2</sup>-d*y<sup>2</sup>=&plusmn;4. If e=1, the complete and partial quotients are printed; if e=0, this detail is suppressed.
+<li><strong>surd</strong>: <tt>surd(d,t,u,v)</tt> finds the continued fraction
+         expansion of a quadratic irrational (u+t*sqrt(d))/v, where d &gt; 1 is not a square, t,u,v integers, v nonzero.
+<li><strong>unit</strong>: <tt>unit(d)</tt> finds the fundamental unit of 
+         Q(sqrt(d)).
+<li><strong>fibonacci</strong>: <tt>f(m,n)</tt> prints the Fibonacci numbers
+         F(m),...,F(n). l(m,n) prints the Lucas numbers L(m),...,L(n).
+<li><strong>rootd</strong>: <tt>root(d)</tt> finds the continued fraction
+         expansion of sqrt(d).
+<li><strong>cfrac</strong>: <tt>cfrac(m,n)</tt> finds the continued fraction
+         expansion of m/n.
+<li><strong>proth</strong>: <tt>proth(h,m)</tt> investigates the primality of
+         h*2<sup>m</sup>+1, h &lt; 2<sup>m</sup>, using Proth's test.<br>
+         (Needs <tt>jacobi</tt>,<tt>lucas</tt>).
+<li><strong>pollard</strong>: <tt>pollard(n)</tt> attempts to find a factor 
+         of n using the Pollard p-1 method.
+<li><strong>3branch</strong>: <tt>s(n)</tt> tests a 3-branched generalized 3x+1
+         conjecture.
+<li><strong>challenge</strong>: <tt>s(n)</tt> tests another 3-branched 
+         generalized 3x+1 conjecture.
+<li><strong>mordell</strong>: <tt>f(a,k)</tt> finds the integer solutions of 
+         y<sup>2</sup>=x<sup>3</sup>+a with x &le; k. (Needs <tt>gcd</tt>.)
+<li><strong>venturini1</strong>: <tt>s(n)</tt> tests a 6-branched generalized
+         3x+1 function of G. Venturini.
+<li><strong>lra</strong>: (needs <tt>gcd</tt>)
+<ul>
+<li> <tt>lnearint(m,n)</tt> returns the (left) nearest integer to m/n.
+<li> <tt>rnearint(m,n)</tt> returns the (right) nearest integer to m/n.
+<li> <tt>lmodd(m,n)</tt> returns the (left) least remainder of sign(n)m mod |n|.
+<li> <tt>rmodd(m,n)</tt> returns the right) least remainder of sign(n)m mod |n|.
+<li> <tt>lra(m,n)</tt> performs the least remainder algorithm on m, n.
+<!--<li> <tt>lbrisse(a,b,n)</tt> calculates a[0]=a,a[1]=b,...,a[n], where a[n+1]=lnearint(a[n]a[n]/a[n-1]), a,b positive integers. Also prints a[n]/a[n-1].
+<li> <tt>rbrisse(a,b,n)</tt> calculates a[0]=a,a[1]=b,...,a[n], where a[n+1]=rnearint(a[n]a[n]/a[n-1]), a,b positive integers. Also prints a[n]/a[n-1].-->
+<li><tt>nicf(m,n)</tt> prints the nearest integer continued fraction of m/n:
+m/n = [a<sub>0</sub> - 1/a<sub>1</sub> - &middot;&middot;&middot; - 1/a<sub>n</sub>].
+<br> We write this as (a<sub>0</sub>,a<sub>1</sub>,...,a<sub>n</sub>).
+
+</ul>
+<li><strong>convergents</strong>: <tt>pn(a[],n)</tt> and <tt>qn(a[],n)</tt> compute the numerator and denominator of the continued fraction [a[0];a[1],...,a[n]].
+<li><strong>lagrange</strong>: <tt>lagrange(a[],n,m)</tt> 
+uses the method of Lagrange (1797) to find the first m+1 partial
+quotients of t, where f(x)=a[n]x<sup>n</sup>+&#183;&#183;&#183;+a[0], a[n] &gt; 0, is a polynomial with integer coefficients, having no rational roots
+ and having exactly one real positive root t, this being &gt; 1.
+<li><strong>lupei</strong>: <tt>s(n)</tt> tests Lu Pei's 3-branched generalized 3x+1 mapping.
+<li><strong>recursion</strong> (Recursive bc programs)
+<ul>
+<li><tt>fib(n)</tt>: returns the nth Fibonacci number, n &ge; 0.
+<li><tt>luc(n)</tt>: returns the nth Lucas number, n &ge; 0.
+<li><tt>fac(n)</tt>: returns factorial(n) if n &ge; 1.
+</ul>
+<li><strong>tonelli</strong>: <tt>x=tonelli(a,p)</tt> returns a square root of a (mod p), deterministically.
+<li><strong>discrete_log</strong>: <tt>r=shanks(n,g,p)</tt>. 
+Here g is a primitive root (mod p) and g<sup>r</sup> &equiv; n (mod p), 0 &le; r &lt; p-1. <br>
+Note: p &lt; 2<sup>32</sup>-2<sup>16</sup>=4294901760, in order to satisy BC array upper bound length of 2<sup>16</sup>-1.<br>
+If r does not exist, we return -1.<br>
+We use Shanks' giant steps-baby steps approach as described in <a href="http://www.mathematik.uni-muenchen.de/~forster/books/algzth.html"><em>Algorithmische Zahlentheorie</em></a> by Otto Forster, pp 65-66.
+<li><strong>forster_log</strong>: <tt>r=shanks(n,g,p)</tt>. 
+Similar to <strong>discrete_log</strong>, except that p is no longer necessarily a prime. Now needs <strong>phi</strong> to provide <tt>orderm(a,m)</tt>.
+<li><strong>leastqnr</strong>: <tt>leastqnr(p)</tt> returns n<sub>p</sub>, the least quadratic nonresidue mod p. (Needs <tt>gcd</tt>).
+<!--<li><strong>log</strong>: <tt>log(a,b,d,u,v)</tt>, a &gt; b &gt; 1, d &gt; 1, u &gt; v &ge; 1 outputs a sequence of integers that are likely to be the initial partial quotients of log(a)/log(b) if u,v are large.  See manuscript <a href="../../pdfs/log.pdf">log.pdf</a>.
+<li><strong>log1</strong>: <tt>log1(a,b,d,r,e)</tt> performs a discrete variant  of Shank's log<sub>b</sub>a algorithm.  Here 1&lt; r is an integer. Also d &gt; 1.  We do not guarantee the correctness of the output. Bigger d give more partial quotients. Roughly r partial quotients seem to be outputted when d=10.<br>
+ If e=1, the convergents, the integers A[i] and decimal expansion of log<sub>b</sub>a are printed, the latter truncated correct to as many decimal places as possible: the r-1th convergent is compared with the rth convergent and the decimal expansions are truncated from where they differ.  e=0 prints only the partial quotients.-->
+<li><strong>rootd_modn</strong>: <tt>rootd_modn(d,n)</tt> finds all solutions of the congruence x<sup>2</sup> &equiv; d (mod n) with 0 &le; x &le; n/2 for small n.
+<li><strong>thue</strong>:  Here d>1, is not a square, n &gt; 1 an odd integer not dividing d-1. u<sup>2</sup> &equiv; d (mod n), 1 &lt; u &lt; n. Then <tt>thue(d,u,p)</tt> finds x,y such that x<sup>2</sup>-dy<sup>2</sup>=kn, with small k.
+<li><strong>sqroot</strong>: <tt>sqroot(d,n)</tt>, n &gt; 1, finds all solutions of x<sup>2</sup> &equiv; d (mod n). It returns -1 if there is no solution, otherwise returns the number of solutions (mod n).
+<li><strong>tomas1</strong> and <strong>tomas2</strong>: These are generalised 3x+1 examples studied by Tom&aacute;s Oliveira e Silva, where all trajectories are eventually periodic.
+<li><strong>log</strong>: <tt>log(a,b,d,r,e)</tt> performs a discrete variant  of Shank's log<sub>b</sub>a algorithm.  Here 1 &lt; r is an integer. Also d &gt; 1.  We do not guarantee the correctness of the output. Bigger (d,r) give more partial quotients. e=1 prints the A[i] and AA[i], while e=0 prints only the m[i] and mm[i]. See <a href="../pdfs/log.pdf">paper</a>.<br>
+I suggest the user runs <tt>test(a,b,d,m,n)</tt>, over a range (m,n), where m &le; n, to get an idea of the correct partial quotients. This
+runs <tt>log1(a,b,d,r)</tt> for r=m,...,n. 
+To get an idea of the correct answer when m=n=r, we recommend taking m=r-t, n=r+t, with 1 &le; t &le; (say) 2.
+<li><strong>base</strong>: <tt>f(b,n)</tt>, n &gt; 0, b &gt; 1, gives the base b expansion of n.
+<li><strong>perfect_power</strong>: <tt>perfect_power(n)</tt> produces 0 if n is not a perfect power; otherwise returns x and p, where n=x<sup>p</sup> and p is the least prime with this property.
+<li><strong>primes</strong>: <tt>primes(m,n)</tt> prints the primes in the interval [m,n], if ma and n lie between 1 and 10<sup>10</sup>.
+<li><strong>nprime</strong>: <tt>nprime(m)</tt> finds the least Lucas-base2 strong pseudoprime p satisfying p &ge; m.
+<li><strong>nprimeap</strong>: <tt>nprimeap(m,a,b)</tt> finds the least Lucas-base2 strong pseudoprime p of the form p=ak+b and satisfying p &ge; m. Here 0 &lt; b &lt; a and gcd(a,b)=1.
+<li><strong>sturm</strong>: <tt>sturm(a[],n,b,e)</tt> prints a sturm polynomial sequence for the (squarefree) polynomial a[n]x<sup>n</sup>+&middot;&middot;&middot;+a[0], evaluates the sequence at x=b and calculates its sign variation. e=0 suppresses printing.
+<li><strong>john</strong>: <tt>johna(b[],n)</tt> takes an array of positive integers b[0],...,b[n-1] and replaces them by an array of positive integers a[0],...,a[n-1], where<br>
+<ol>
+    <li> a[i] divides b[i] for 0 &le; i &lt; n;
+   <li> gcd(a[i],a[j])=1 for 0 &le; i &lt; j&lt; n;
+   <li> lcm(b[0],...,b[n-1])=a[0]&middot;a[1]&middot;&middot;&middot;a[n-1].
+</ol>
+<tt>john(a,b)</tt> does the case n=2.<br>
+The program is due to John Campbell. Needs the program <strong>gcd</strong>.
+<li><strong>reducepos</strong>: <tt>reduce(a,b,c)</tt> takes as input an indefinite binary quadratic form ax<sup>2</sup>+bxy+cy<sup>2</sup> and uses the PQa algorithm to find a cycle of reduced forms. (See <a href="../pdfs/reduce.pdf">explanation</a>.)
+<li><strong>classnoneg</strong>: <tt>class_number(d,flag,table_flag)</tt> lists the reduced binary quadratic forms of negative discriminant d and returns their number h(d) if <tt>flag</tt>=0. If <tt>flag</tt>=1, only the primitive forms are counted. Only the class number is printed if table_flag=0.<br>
+If d is the discriminant of an imaginary quadratic field K, then the primitive forms class-number h(d) is also the class number of K. <br>
+Algorithm 5.3.5 of Henri Cohen's <em>A course in computational algebraic number theory</em> is used.<br>
+<tt>table(m,n)</tt> prints h(-d) for all squarefree d in the range m &le; d &lt; n,
+where n&lt;10<sup>6</sup>.
+<li><strong>reduceneg</strong>: <tt>reduce(a,b,c)</tt> takes as input a positive definite binary quadratic form ax<sup>2</sup>+bxy+cy<sup>2</sup> and uses an algorithm of Gauss to find the equivalent reduced form and unimodular transforming matrix.
+<li><strong>classnopos</strong>: <tt>class_number(d)</tt> (1 &lt; d &lt; 10<sup>6</sup> and squarefree) finds the class number of the real quadratic field Q(<img align="middle" src="../gifs/sqrtd.gif">) and the sign of the fundamental unit. A list of reduced binary quadratic forms corresponding to the ideal classes is also given.<br>
+<tt>table(m,n)</tt> prints h(d) for all squarefree d in the range m &le; d &lt; n,where n &lt; 10<sup>6</sup>.<br>
+<tt>class_number0(d)</tt> (d &gt; 0, not a perfect square and 0 or 1 (mod 4))
+ returns the class-number of binary quadratic forms of discriminant d.  Also the solubility of x<sup>2</sup>-d*y<sup>2</sup>=-4 is determined.<br>
+This is basically the same program as <tt>class_number(d)</tt>, except that in
+the case of non-solubility of x<sup>2</sup>-d*y<sup>2</sup>=-4, we count the form (-a,b,c) as well as (a,b,c), a &gt; 0 and this means we return twice the value that <tt>class_number(d)</tt> would otherwise have returned.  Regarding this point, see G.B. Mathews, <em>Theory of Numbers</em>, pp. 80-81.
+<li><strong>unimodular</strong>: <tt>unimodular(p,q,r,s)</tt> expresses a unimodular matrix A &ne; I<sub>2</sub> or U=[0,1,1,0] with non-negative coefficients, as a product of one of the following forms:<br>
+P, UP, PU, or UPU, where P is a product of matrices of the form U<sub>a</sub>=[a,1,1,0], a>0.<br>
+The representation is unique. See Kjell Kolden, <em>Continued fractions and linear substitutions</em>, Arch. Math. Naturvid. 50 (1949), 141-196.<br>
+The number n of matrices in the product U<sub>0</sub> <img align="middle" src="../gifs/cdots.gif"> U<sub>n-1</sub> is returned. 
+<li><strong>binomial</strong>: <tt>binomial_p(n,k,p)</tt> finds the power of a prime p dividing the binomial coefficient <img align="top" src="../gifs/binomial.gif">.<br>
+<tt>binomial(n,k)</tt> prints the prime power factorization of the binomial coefficient <img align="top" src="../gifs/binomial.gif">.<br>
+<li><strong>factorial</strong>: <tt>factorial_p(n,p)</tt> finds the power of a prime p dividing n!<br> 
+<tt>factorial(n)</tt> finds n!<br>
+<li><strong>p-adic</strong>: 
+<tt>2adic(a,n)</tt> returns the first n binary digits of a 2-adic sqroot x of a positive integer a=8k+1. Here x=1 or 5 (mod 8).<br> 
+<tt>padic(a,p,n)</tt> returns the first n p-adic digits of a p-adic sqroot x of a positive integer a which is a quadratic residue (mod p). Here x=b (mod p), where b<sup>2</sup>=a (mod p) and 0 &lt; b &lt; p.<br> 
+<li><strong>raney</strong>: <tt>raney(p,q,r,s)</tt> expresses a nonsingular matrix A=[p,q;r,s] (&ne; I_2 or U=[0,1;1,0]) as a product of positive powers of R=[1,1;0,1] and L=[1,0;1,1], followed by a row-balanced matrix D=[a,b;c,d]. ie. a &lt; c &amp; b &gt; d or a &gt; c &amp; b &lt; d. The number of terms L and R is returned.<br>
+With U<sub>a</sub>=[a,1;1,0], note that 
+U<sub>a<sub>0</sub></sub>...U<sub>a<sub>2n</sub></sub>=R<sup>a<sub>0</sub></sup>L<sup>a<sub>1</sub></sup>...R<sup>a<sub>2n</sub></sup>U<sub>0</sub> and that U<sub>a<sub>0</sub></sub>...U<sub>a<sub>2n+1</sub></sub>=R<sup>a<sub>0</sub></sup>L<sup>a<sub>1</sub></sup>...L<sup>a<sub>2n+1</sub></sup>I<sub>2</sub>.
+<li><strong>davison</strong>: <tt>davison(l,m,n)</tt> performs the algorithm of J.L. Davison's paper <em>An algorithm for the continued fraction of e<sup>l/m</sup></em>, Proceedings of the Eighth Manitoba Conference on Numerical Mathematics and Computing (Univ. Manitoba, Winnipeg, 1978), 169--179, Congress. Numer., XXII, Utilitas Math. <br>
+ With n &ge; 0, we first find the n* of Davison's Proposition 4.1 and apply Raney's factorisation to A<sub>0</sub>...A<sub>k</sub>, for n* &le; k &le; n*+n.<br>
+The number (count) of partial quotients of e<sup>l/m</sup> found is returned. count becomes positive for all large n.
+<li><strong>squareroot</strong>: This is an improved version of <strong>sqroot</strong> and contains <tt>cornacchia(a,b,m)</tt>. This finds all positive primitive solutions of ax<sup>2</sup>+by<sup>2</sup>=m, where a &gt; 0, b &gt; 0, a+b &gt; m &gt; 0, gcd(a,b)=1=gcd(a,m). If a=b=1, we get solutions with y &le; x.<br>
+r=sqroot(d,n,e) returns the solutions of x<sup>2</sup>=d (mod n).
+ r is the number of solutions (mod n).
+ If e=1, we print the solutions (mod reduced_modulus) as
+  reduced_solution[0],...,reduced_solution[count-1].
+  If e=0, solutions are not printed. Used eg. in cornacchia().
+  If omega(n) &gt; 1, we use the Chinese remainder theorem after solving mod
+ qglobal[i]<sup>kglobal[i]</sup>, i=0,...,omega(n)-1.
+ The array solution[0],...,solution[numbr-1] consists of the solutions
+ (mod n) in the range 0 &le; x &le; n/2 and is used in cornacchia().<br>
+See A. Nitaj, <em>L'algorithme de Cornacchia</em>, Expositiones Mathematicae 13 (1995), 358-365.
+<li><strong>phi</strong> now contains <tt>sigmak(k,n)</tt> and <tt>tau(n)</tt>,  where r=sigmak(k,n), k &gt; 0,n &gt; 0, returns the sum of the k-th powers of the divisors of n and u=tau(n) returns Ramanujan's tau function. <br>
+We use the simplest formula for tau(n) given on page 140 of T.M. Apostol, <em>Modular functions and Dirichlet series in number theory</em>, 20-22, 140.
+<li><strong>patz</strong>: <tt>patz(d,n,e)</tt> finds fundamental solutions for the diophantine equation x<sup>2</sup>-dy<sup>2</sup>=n, d &gt; 0, d not a perfect square. We only find the fundamental solutions for classes P satisfying P<sup>2</sup> &equiv; d (mod |n|) with 0 &le; P &le; |n|/2. <br>
+e=1 is verbose and prints the partial quotients, complete quotients and convergents up to the period (resp. double period) according as the period-length of omega[j] and omega*[j] is even or odd. e=0 prints only the fundamental solutions.<br>
+Needs <strong>squareroot</strong>.
+<li><strong>squareroot</strong> now contains <tt>quadratic(a,b,c,n,flag)</tt>. This returns the number k of solutions of the congruence ax<sup>2</sup>+bx+c &equiv; 0 (mod n), where gcd(a,n)=1. The solutions in the range 0 &le; x &lt; n are returned as global variables quadratic_solution[0],...,quadratic_solution[k-1]. flag=1 prints the solutions.
+<li><strong>patz</strong> now contains <tt>binary(a,b,c,n)</tt>. This solves ax<sup>2</sup>+bxy+cy<sup>2</sup>=n, where n is non-zero and b<sup>2</sup>-4ac is positive and not a perfect square. The method is from the paper <em>The Diophantine equation ax<sup>2</sup>+bxy+cy<sup>2</sup>=N, D=b<sup>2</sup>-4ac &gt; 0</em>, Journal de Th&eacute;orie des Nombres de Bordeaux, <b>14</b> (2002) 257-270 by K.R. Matthews.
+<li><strong>decimal2rational</strong>. 
+Typing <tt>d2r(pre[],per[],k,r,b)</tt> will output the rational number with base b preperiod given by pre[k-1],...,pre[0]  (if present) and period per[r-1],...,per[0] consisting of integers in the range [0,b-1].<br>
+If there is no preperiod, we let pre[0]=0 and k=0.<br>
+Example: Take pre[0]=0, per[0]=2, per[1]=1, k=0, r=2, b=10.<br>
+Then typing <tt>d2r(pre[],per[],k,r,b)</tt> outputs .1212&middot;&middot;&middot;=4/33.
+<li><strong>sqrt_period</strong>.  Typing <tt>z=period(d)</tt> outputs the period-length z of the continued fraction of &radic;d. We use the Pohst-Zassenhaus half-period trick. See <a href="http://www.numbertheory.org/pdfs/pell.pdf">paper</a>.
+<li><strong>nipell</strong>. (a) Typing <tt>nipell(61,0)</tt> finds the smallest solution of Pell equation x<sup>2</sup>-61y<sup>2</sup>=1 or -1, using the nearest integer continued fraction of &radic;61.  The period (or semi-period in the case that the negative Pell equation is soluble) is also printed.<br>
+Typing <tt>nipell(61,1)</tt>  prints partial quotients, complete convergents and convergents.<br>
+(b) Typing <tt>nicf_pqa(d,t,u,v,e)</tt>, e=0 or 1, finds the nearest integer continued fraction of (u + t&radic;d)/v of Hurwitz.<br>
+Typing <tt>nicf_pqa0(d,t,u,v,e)</tt>, e=0 or 1, finds the nearest integer continued fraction of (u + t&radic;d)/v in Perron's book.  When e=1, the period partial numerators and denominators are in capitals.<br>
+<li><strong>nscf_pell</strong>. This program solves the Pell equations x<sup>2</sup> - dy<sup>2</sup> = &plusmn;1, using the NSCF algorithm - nearest square continued fraction algorithm.  We follow the algorithm of <a href="http://www.ms.uky.edu/~sohum/AAK/PRELUDE.htm">A.A. Krisnaswami Ayyangar</a>.<br>
+(a) Typing <tt>nscf_pell(d,1)</tt> prints the partial quotients, convergents, complete convergents of the period of the nearest square continued fraction of sqrt(d), as well as the Pell equation solutions, whereas <tt>nscf_pell(d,0)</tt> prints only the  continued fraction and solutions of the Pell equation.<br>
+(b) Typing <tt>nscf_pqa(d,t,u,v,e)</tt>, e=0 or 1, finds the nearest square continued fraction of (u + t&radic;d)/v.
+P
+<li><strong>spiral</strong>. This calculates the spiral of <a href="http://www-cs-faculty.stanford.edu/~uno/gkp.html"><em>Concrete Mathematics</em></a>, Graham, Knuth, Patashnik,  Exercise 40, page 99. Needs <strong>gcd</strong>.  Type <tt>spiral(n)</tt> and then x(n) and y(n) to get the coordinates of the n-th point of the spiral.  Typing <tt>n=inverse_spiral(x,y)</tt> gives the inverse function.
+<li><strong>equivalent</strong>. This produces a quadratic surd &eta;=(A+&radic;d)/C=(p&xi;+q)/(r&xi;+s), where &xi;=(a+&radic;d)/c
+and &Delta;=ps-qr=&plusmn;1. Here A=&Delta;(prt+a(qr+ps)+qsc), C=&Delta;(r<sup>2</sup>t+2rsa+s^c) and t=(a<sup>2</sup>-d)/c. If &xi; is in standard form, so is &eta;. Type <tt>equiv(a,c,d,p,q,r,s)</tt>.
+</ol>
+<p>
+<i><a href="mailto:webmaster@numbertheory.org">Email</a></i>
+<br><i><a href="http://www.numbertheory.org/keith.html">http://www.numbertheory.org/keith.html</a></i><p>
+<em> Last modified 29th May 2009</em>
+</body>
+</html>

@@ -1,0 +1,18 @@
+define calcsegments(base,x) {
+  auto os,oib,s[],t;
+  oib=ibase;ibase=A
+   s[ 0]=s[ 6]=s[ 9]=s[10]=s[32]=6
+   s[ 1]=s[27]=2
+   s[ 2]=s[ 3]=s[ 5]=s[11]=s[13]=s[14]=s[16]=s[25]=s[26]=s[31]=s[34]=5
+   s[ 4]=s[12]=s[15]=s[17]=s[20]=s[24]=s[28]=s[29]=s[35]=4
+   s[ 7]=s[19]=s[21]=s[22]=s[23]=s[30]=s[33]=3
+   s[ 8]=7
+   s[18]=1
+  ibase=oib
+  os=scale;scale=0;x/=1
+  t=0;if(x<0){t=1;x*=-1}
+  if(x==0){scale=os;return s[0]}
+  if(2>base||base>36)base=A
+  while(x){t+=s[x%base];x/=base}
+  scale=os;return t
+}

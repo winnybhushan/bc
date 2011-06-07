@@ -1,0 +1,71 @@
+# pdhi(x) - Pan Digital Halving Index
+# Returns how many times x must be divided by 2 before
+# the result contains all digits from 0 to 9 (if ibase = 10).
+# e.g. 3339 -> 1669.5 -> 834.75 -> 417.375 ->
+#      208.6875 -> 104.34375 -> 52.171875 ->
+#      26.0859375 -> 13.04296875, i.e. 8 times
+
+# Uses ibase as the base for divisions (usually 10)
+
+define pdhi(x) {
+  auto d[],xi,xf,c,r,pdhi,lim,i;
+  if(x==0){print "pdhi: Infinity\n";return A^scale-1}
+  if(x<0)x*=-1
+  c=1;pdhi=-1;lim=int(A/ibase+3)*scale
+  while(c){
+    pdhi+=1
+    xi=int(x);xf=x-xi
+    while(xi){
+      r=int(xi/ibase)
+      d[xi-ibase*r]=1
+      xi=r
+    }
+    for(i=lim ; i && xf ; i--){
+    #while(xf){
+      xf*=ibase
+      r=int(xf)
+      d[r]=1
+      xf-=r
+    }
+    c=ibase
+    for(r=0;r<ibase;r++){c-=d[r];d[r]=0}
+    x/=2
+  }
+  return pdhi;
+}
+
+# pdmi(x, m) - Pan Digital Multiplying Index
+# Returns how many times x must be multiplied by m before
+# the result contains all digits from 0 to 9 (if ibase = 10).
+# e.g. pdmi(3339,0.5) -> 1669.5 -> 834.75 -> 417.375 ->
+#      208.6875 -> 104.34375 -> 52.171875 ->
+#      26.0859375 -> 13.04296875, i.e. 8 times
+
+# Uses ibase as the base for divisions (usually 10)
+
+define pdmi(x,m) {
+  auto d[],xi,xf,c,r,pdmi,lim,i;
+  if(x==0){print "pdmi: Infinity\n";return A^scale-1}
+  if(x<0)x*=-1
+  c=1;pdmi=-1;lim=int(A/ibase+3)*scale
+  while(c){
+    pdmi+=1
+    xi=int(x);xf=x-xi
+    while(xi){
+      r=int(xi/ibase)
+      d[xi-ibase*r]=1
+      xi=r
+    }
+    for(i=lim ; i && xf ; i--){
+    #while(xf){
+      xf*=ibase
+      r=int(xf)
+      d[r]=1
+      xf-=r
+    }
+    c=ibase
+    for(r=0;r<ibase;r++){c-=d[r];d[r]=0}
+    x*=m
+  }
+  return pdmi;
+}

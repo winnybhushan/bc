@@ -1,0 +1,200 @@
+### Complex.BC - Rudimentary complex number handling for GNU BC
+
+  ## Not to be regarded as suitable for any purpose
+  ## Not guaranteed to return correct answers
+
+# Read a digit from the decimal representation of a number
+# read_digit(3210.987, -1) returns 9 as that is the digit in
+# the 10^-1 position.
+define read_digit(number, place) {
+  auto os,d;os = scale
+  number*=A^-place
+  scale=0
+    d = (number%A)/1
+  scale=os
+  return(d)
+}
+
+# MakeComplex: Turn two numbers into one by interleaving the digits
+define makecomplex(r,i) {
+  auto c, rd, id, ri, ii, j, sign
+
+  r /= 1
+  i /= 1
+  ri = length(r)-scale
+  ii = length(i)-scale
+
+  sign = 1
+  if (r<0){r*=-1;sign+=2}
+  if (i<0){i*=-1;sign+=1}
+
+  if(ri<ii)ri=ii
+  scale *= 2
+  
+  c = 0/1
+
+  for(j=-scale;j<ri;j++) {
+    rd = read_digit(r, j)
+    id = read_digit(i, j)
+    c += (rd*A+id)*(A*A)^j
+  }
+
+  c += (A*A)^j*sign
+
+  scale /= 2
+  return(c)
+  
+}
+
+# workhorse for real & imag
+define realimag_(c,f) {
+  auto x, sign, cs, ci, j, os
+  os = scale
+  cs = scale(c);ci = length(c)-cs-1
+
+  sign = read_digit(c,ci)
+
+  scale = cs/2
+
+  x = 0
+  for(j=-scale;j*2<ci;j++) {
+    x += A^j * read_digit(c,j*2+f)
+  }
+
+  if ( (sign == 2+f) || (sign == 4) )x*=-1
+
+  scale = os
+  return(x)
+}
+
+# Extract the real part of a generated complex number
+define real(c) {
+  return realimag_(c,1)
+}
+
+# Extract the imaginary part of a generated complex number
+define imag(c) {
+  return realimag_(c,0)
+}
+
+# Print a generated complex number
+# (normal print functions don't work on complex numbers)
+define printc(c) {
+  auto r,i
+  r = real(c)/1
+  i = imag(c)/1
+  print r
+  if(i<0){print " -";i*=-1}else{print " +"}
+  print " i*"
+  return(i)
+}
+
+## Basic math - ordinary bc operators don't work on these special
+##              interleaved complex numbers
+
+# Add two complex numbers and return another complex number
+define cadd(c1,c2) {
+  return makecomplex(real(c1)+real(c2),imag(c1)+imag(c2))
+}
+
+# Subtract a complex number from another, returning complex
+define csub(c1,c2) {
+  return makecomplex(real(c1)-real(c2),imag(c1)-imag(c2))
+}
+
+# Multiply two complex, return complex
+define cmul(c1,c2) {
+  auto r1,r2,i1,i2;
+  r1 = real(c1)
+  i1 = imag(c1)
+  r2 = real(c2)
+  i2 = imag(c2)
+  return makecomplex(r1*r2-i1*i2, r2*i1+r1*i2)
+}
+
+# Calculates the absolute value of a complex number
+# NB: returns a standard bc number and not a new fangled 'complex'
+define cabs(c) {
+  return sqrt(real(c)^2+imag(c)^2)
+}
+
+# Returns the complex conjugate of a complex number
+# ...is faster than the hashed out return line
+define cconj(c) {
+  #return makecomplex(real(c), -imag(c))
+  return c - 2*10^(length(c)-scale(c)-1)
+}
+
+# Divide one complex by another, returning a third
+define cdiv(c1,c2) {
+  auto r1,r2,i1,i2,aa;
+  r1 = real(c1)
+  r2 = real(c2)
+  i1 = imag(c1)
+  i2 = imag(c2)
+  aa = r2^2+i2^2
+  return makecomplex((r1*r2+i1*i2)/aa, (r2*i1-r1*i2)/aa)
+}
+
+# Negate a complex number (i.e. multiply by -1)
+# ...faster than cmul(c, makecomplex(-1,0))
+# ...or the hashed out return line
+define cneg(c) {
+  auto sign, t;
+  # return makecomplex(-real(c), -imag(c))
+  t = length(c) - scale(c) - 1
+  sign = read_digit(c,t)
+  c += (5-2*sign)*(10^t)
+  return(c)
+}
+
+## Basic Math II - fast[er] squaring, square roots and integer power
+
+# Square a complex number
+define csquare(c) {
+  auto r,i
+  r = real(c)
+  i = imag(c)
+  return makecomplex(r^2-i^2, 2*r*i)
+}
+
+# Find the primary square root of a complex number
+define csqrt(c) {
+  auto r,i, sr, si
+  r = real(c)
+  i = imag(c)
+  if(i==0){if(r>=0){
+    return(makecomplex(sqrt(r),0))
+  } else {
+    return(makecomplex(0,sqrt(-r)))
+  }}
+  sr = sqrt((sqrt(r^2+i^2)+r)/2)
+  si = i/sr/2
+  return makecomplex(sr,si)
+}
+
+# subfunctions for use by cintpow
+define mod(n,m) {auto s;s=scale;scale=0;n%=m;scale=s;return(n)}
+define int(n)   {auto s;s=scale;scale=0;n/=1;scale=s;return(n)}
+
+# Raise a complex number [c] to an integer power [n]
+# NB: n is a standard bc number and not a complex
+define cintpow(c, n) {
+  auto x
+  x = makecomplex(1,0)
+  n = int(n)
+  if(n<0)return( cdiv(x,cintpow(c,-n)) )
+  if(n==0)return( x )
+  if(n==1)return( c )
+  if(n==2)return( csquare(c) )
+  while(n) { 
+    if(mod(n,2)) {
+      x = cmul(x, c) ; n -= 1
+      #print "DEBUG: cintpow - odd_ (",n,")\n"
+    } else {
+      c = csquare(c) ; n = int(n/2)
+      #print "DEBUG: cintpow - even (",n,")\n"
+    }
+  }
+  return x
+}

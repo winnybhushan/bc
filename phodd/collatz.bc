@@ -1,0 +1,113 @@
+### Collatz.BC - The 3x+1 or hailstones problem
+
+  ## Here we'll be using the modified rules of
+  ##   Odd  -> (3x+1)/2
+  ##   Even -> x/2
+  ## ...as otherwise the usual odd step (3x+1) is always followed by
+  ## the even step. This way each rule has a 50/50 distribtion.
+
+# Generate the next hailstone 5 -> (3*5+1)/2 = 8; 8 -> 8/2 = 4; 
+define cz_next(x) {
+  auto os;if(x<=1)return(1)
+  os=scale;scale=0;x/=1
+  if(x%2)x=3*x+1;x/=2
+  scale=os
+  return(x)
+}
+
+# Take a guess at the previous hailstone - since in some cases there are
+# two choices, this function always chooses the lower option.
+# e.g. 5 comes from both 3 [(3*(3)+1)/2] and 10 [10/2]
+# - this function chooses 3.
+define cz_prev(x) {
+  auto os;if(x<=1)return(1)
+  os=scale;scale=0;x/=1
+  x=2*x-1;if(x%3){x+=1}else{x/=3}
+  scale=os
+  return(x)
+}
+
+# Determine the hailstone chain length to 1
+# e.g. [5 -> 8 -> 4 -> 2 -> 1] = 4 steps
+define cz_chlen(x) {
+  auto os,c;if(x<=1)return(0)
+  os=scale;scale=0;x/=1
+  c=0
+  while(x!=1){
+    c+=1
+    if(x%2)x=3*x+1;x/=2
+  }
+  scale=os
+  return(c)
+}
+
+# Add the values of all the hailstones in a chain.
+# [5 -> 8 -> 4 -> 2 -> 1] => 5 + 8 + 4 + 2 + 1 = 20
+define cz_chsum(x) {
+  auto os,s;if(x<=1)return(0)
+  os=scale;scale=0;x/=1
+  s=x
+  while(x!=1){
+    if(x%2)x=3*x+1;x/=2
+    s+=x
+  }
+  scale=os
+  return(s)
+}
+
+# Print the whole hailstone chain of numbers from x
+define cz_chain(x) {
+  auto os;if(x<=1)return(0)
+  os=scale;scale=0;x/=1
+  while(x!=1){
+    x
+    if(x%2)x=3*x+1;x/=2
+  }
+  scale=os
+  return(1)
+}
+
+# Find the highest 'altitude' that the hailstone chain for x reaches
+define cz_chmax(x) {
+  auto os,m;if(x<=1)return(0)
+  os=scale;scale=0;x/=1
+  m=0
+  while(x!=1){
+    if(x>m)m=x
+    if(x%2)x=3*x+1;x/=2
+  }
+  scale=os
+  return(m)
+}
+
+# Generate a binary number representing a hailstone choice path
+define cz_8tp(x) { # 8-tree path
+# all numbers lead back to 8, this function maps the path as a binary
+# number with the bit representing 8 as most significant.
+# (8) = 1, (5 -> 8) = 10, (16 -> 8) = 11, (10 -> 5 -> 8) = 101, etc
+  auto os,p,t;if(x<4)return(0)
+  os=scale;scale=0;x/=1
+  p=0;t=1
+  while(x!=8){
+    if(x%2){x=(3*x+1)/2}else{x/=2;p+=t}
+    t*=2
+  }
+  p+=t
+  scale=os
+  return(p)
+}
+
+# Generate a hailstone from its path's binary number
+define cz_i8tp(p) { # convert an 8-tree path back into a number
+  auto os,msb,x;if(p<1)return(0)
+  os=scale;scale=0;p/=1
+  msb=1;while(msb<=p)msb*=2;msb/=2
+  x=8;p-=msb;msb/=2
+  while(msb){
+    while(msb>p){scale=os;x=(2*x-1)/3;scale=0; msb/=2}
+    if(msb){scale=os;x*=2;scale=0; p-=msb;msb/=2}
+  }
+  p=x/1;if(p==x)x=p # remove zeroes after dp if there are any
+  scale=os
+  return(x)
+}

@@ -1,0 +1,91 @@
+/* BC program reduceneg */
+/* absolute value of an integer n */
+
+define abs(n){
+	if(n>=0) return(n)
+	return(-n)
+}
+
+/* lmodd(m,n) returns r, m=q*n+r, -n/2 < r <= n/2 */
+define lmodd(m,n){
+	return(m-n*lnearint(m,n))
+}
+
+/* rmodd(m,n) returns r, m=q*n+r, -n/2 <= r < n/2 */
+define rmodd(m,n){
+	return(m-n*rnearint(m,n))
+}
+
+/* lnearint(m,n) returns z, the nearest integer to m/n,  
+ * z=t if m/n=t+1/2
+ */
+define lnearint(m,n){
+	auto x,y,z
+	y=int(m,n)
+	x=n*y
+	z=2*(m-x)
+	if (abs(z)>abs(n)){y=y+1}
+	return(y)
+}
+
+define mod(a,b){
+	auto c
+	c=a%b
+	if(a>=0) return(c)
+	if(c==0) return(0)
+        return(c+b)	
+}
+
+/* int(a,b)=integer part of a/b, a, b integers, b != 0 */
+
+define int(a,b){
+	if(b<0){
+	a= -a
+	b= -b
+	}
+	return((a-mod(a,b))/b)
+}
+
+/* This is Gauss' algorithm for reducing a positive definite binary
+ * quadratic form. See L.E. Dickson, Introduction to the theory of numbers,
+ * page 69. Here d=b^2-4ac <0, a>0,c>0, while the reduced form (A,B,C)
+ * satisfies -A<B<=A, C>=A, with B>=0 if C=A.
+ * The number of steps taken in the reduction is returned.
+ */
+
+define reduce(a,b,c){
+	auto i,d,x,y,u,v,temp,tempx,delta
+        i=0
+	x=1;y=0;u=0;v=1
+	d=b^2-4*a*c
+	if(-a<b && b<=a && a<=c){
+		if(c==a && b>=0){
+		print "(",a,",",b,",",c,") is reduced\n"
+		print "Transforming matrix:1,0,0,1\n"
+			return
+		}
+	}
+	while(1){
+		temp=b
+		b=lmodd(-b,2*c)
+		delta= -(temp+b)/(2*c)
+		temp=u
+		tempx=x
+		x= -y;y=tempx+y*delta;u= -v;v=temp+v*delta
+		a=c
+		c=(b^2-d)/(4*a)
+		i=i+1
+	print "(",a,",",b,",",c,")\n"
+		if(c>=a)break
+	}
+	if(a==c && b<0){
+		b= -b
+	tempx=x
+	x=y;y= -tempx
+	tempu=u
+	u=v;v= -tempu
+	}
+	print "(",a,",",b,",",c,") is reduced\n"
+	print "Transforming matrix:",x,",",y,",",u,",",v,"\n"
+	return(i)
+}

@@ -1,0 +1,44 @@
+define printroman(n) {
+  auto os,t[],ti,i,d,f,x;
+  if(n==0){print "N";return 0}
+  os=scale;scale=0
+  f=n-(x=n/1);
+  for(ti=0;x>=4000;ti++){t[ti]=x%1000;x/=1000}
+  t[ti]=x
+  for(;ti>=0;ti--){
+    x=t[ti]
+    if(x)for(i=0;i<ti;i++)print"("
+    d=(x/1000)%10
+    for(i=d;i;i--)print"M"
+    d=(x/100)%10
+    if(d==4)print"CD"
+    if(d==9)print"CM"
+    if(4<d&&d<9)print "D"
+    if((i=d%5)<4)for(;i;i--)print"C"
+    d=(x/10)%10
+    if(d==4)print"XL"
+    if(d==9)print"XC"
+    if(4<d&&d<9)print "L"
+    if((i=d%5)<4)for(;i;i--)print"X"
+    d=x%10
+    if(d==4)print"IV"
+    if(d==9)print"IX"
+    if(4<d&&d<9)print "V"
+    if((i=d%5)<4)for(;i;i--)print"I"
+    if(x)for(i=0;i<ti;i++)print")"
+  }
+  if(!f){scale=os;return n}
+  if(x)print " "
+  x=A^(scale(f)-1);while(x&&f){
+    f*=C;d=f/1;f-=d
+    if(d)for(i=0;i<ti;i++)print"("
+    if(d>=6){print"S";d-=6}
+    if(d==1)print".";if(d==2)print":"
+    if(d==3)print":.";if(d==4)print"::"
+    if(d==5)print"::.";
+    if(d)for(i=0;i<ti;i++)print")"
+    x/=C;if(x&&f)print"/"
+  }
+  scale=os;return n
+}
+  

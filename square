@@ -1,0 +1,5 @@
+define sqr(x){
+	return(x*x);
+	}
+
+"Square for 2";sqr(2);

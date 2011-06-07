@@ -1,0 +1,24 @@
+/* bc program base */
+" Typing f(b,n) gives the base b expansion of n
+"
+define f(b,n){
+auto i,q,t,x,a[],b[]
+     i=0
+     if(n<0){"Try again, n<";return(0)}
+     if(b<=1){"Try again, b<=";return(1)}
+     x=n
+     while(n>=b){
+          q=n/b
+          t=n-q*b
+          a[i]=t
+          n=q
+          i=i+1
+     }
+     a[i]=n
+     for(j=0;j<i;j++){
+	b[j]=a[i-j]
+	print b[j],","
+     }
+     print a[0],"\n"
+     print "are the base ",b," digits of ";return(x)
+}
